@@ -23,6 +23,11 @@ namespace KernelSharp
             {
                 return value._Value;
             }
+
+            public static implicit operator ulong(PVOID value)
+            {
+                return (ulong)value._Value;
+            }
         }
 
         public static char* w_str(this string str)
@@ -93,6 +98,18 @@ namespace KernelSharp
         [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport("ntoskrnl.exe", "strstr")]
         public static extern char* strstr(char* str, char* subStr);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        [RuntimeImport("ntoskrnl.exe", "strlen")]
+        public static extern ulong strlen(char* str);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        [RuntimeImport("ntoskrnl.exe", "wcslen")]
+        public static extern ulong wcslen(char* str);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        [RuntimeImport("ntoskrnl.exe", "memcmp")]
+        public static extern int memcmp(void* buf1, void* buf2, ulong size);
 
         public static class Undocumented
         {

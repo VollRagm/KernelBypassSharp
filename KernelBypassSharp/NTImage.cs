@@ -466,5 +466,10 @@ namespace KernelSharp
             IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE = 0x8000
         }
 
+        public static unsafe IMAGE_SECTION_HEADER* IMAGE_FIRST_SECTION(IMAGE_NT_HEADERS64* nth)
+        {
+            return (IMAGE_SECTION_HEADER*)((ulong)nth + 24 + (ulong)nth->FileHeader.SizeOfOptionalHeader);
+        }
+
     }
 }

@@ -12,7 +12,8 @@ namespace KernelBypassSharp
         static NTSTATUS DriverEntry()
         {
             var win32k = Util.GetKernelModuleByName("win32kbase.sys");
-            DbgPrintEx(0, 0, "Win32k: %p", win32k);
+            DbgPrintEx(0, 0, "win32kbase.sys -> %p", win32k);
+
 
             return NTSTATUS.Success;
         }

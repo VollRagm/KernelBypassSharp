@@ -17,7 +17,7 @@
 
 @if "%1" == "clean" exit /B
 
-csc.exe /nologo /debug:embedded /noconfig /nostdlib /runtimemetadataversion:v4.0.30319 Program.cs KernelSharp/WDK.cs KernelSharp/Runtime/InteropServices.cs KernelSharp/Runtime/CompilerHelpers.cs KernelSharp/Runtime/CompilerServices.cs KernelSharp/Runtime/System.cs KernelSharp/Runtime/Runtime.cs /out:Program.ilexe /langversion:latest /unsafe || goto Error
+csc.exe /nologo /debug:embedded /noconfig /nostdlib /runtimemetadataversion:v4.0.30319 Program.cs NTImage.cs Util.cs KernelSharp/WDK.cs KernelSharp/Runtime/InteropServices.cs KernelSharp/Runtime/CompilerHelpers.cs KernelSharp/Runtime/CompilerServices.cs KernelSharp/Runtime/System.cs KernelSharp/Runtime/Runtime.cs /out:Program.ilexe /langversion:latest /unsafe || goto Error
 %ILCPATH%\ilc Program.ilexe -o Program.obj --systemmodule Program --map Program.map -O || goto Error
 
 :: Also set this path to your oath

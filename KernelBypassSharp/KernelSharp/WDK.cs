@@ -1,10 +1,38 @@
 ﻿using System.Runtime;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace KernelSharp
 {
     public static unsafe class WDK
     {
+        #region Struct Definitions
+
+        public struct EPROCESS
+        {
+            private void* _Value;
+
+            public static implicit operator EPROCESS(void* value)
+            {
+                return new EPROCESS { _Value = value };
+            }
+
+            public static implicit operator EPROCESS(ulong value)
+            {
+                return new EPROCESS { _Value = (void*)value };
+            }
+
+            public static implicit operator void*(EPROCESS value)
+            {
+                return value._Value;
+            }
+
+            public static implicit operator ulong(EPROCESS value)
+            {
+                return (ulong)value._Value;
+            }
+        }
+
         public struct PVOID
         {
             private void* _Value;
@@ -28,6 +56,15 @@ namespace KernelSharp
             {
                 return (ulong)value._Value;
             }
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        public static bool NT_SUCCESS(NTSTATUS status)
+        {
+            return (((int)(status)) >= 0);
         }
 
         public static char* w_str(this string str)
@@ -75,6 +112,10 @@ namespace KernelSharp
             }
         }
 
+        #endregion
+
+        #region NTAPI Imports
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport("ntoskrnl.exe", "ExAllocatePool")]
         public static extern PVOID ExAllocatePool(PoolType poolType, ulong size);
@@ -90,6 +131,18 @@ namespace KernelSharp
         [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport("ntoskrnl.exe", "DbgPrintEx")]
         private static extern ulong _DbgPrintEx(uint ComponentId, uint level, char* Format, void* vararg1);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        [RuntimeImport("ntoskrnl.exe", "ExGetPreviousMode")]
+        public static extern KProcessorMode ExGetPreviousMode();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        [RuntimeImport("ntoskrnl.exe", "IoGetCurrentProcess")]
+        public static extern void* IoGetCurrentProcess();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        [RuntimeImport("ntoskrnl.exe", "DbgBreakPoint")]
+        public static extern void DbgBreakPoint();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport("ntoskrnl.exe", "wcstombs")]
@@ -111,12 +164,20 @@ namespace KernelSharp
         [RuntimeImport("ntoskrnl.exe", "memcmp")]
         public static extern int memcmp(void* buf1, void* buf2, ulong size);
 
+
+
+        #endregion
+
         public static class Undocumented
         {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             [RuntimeImport("ntoskrnl.exe", "ZwQuerySystemInformation")]
             public static extern NTSTATUS ZwQuerySystemInformation(SystemInformationClass SystemInformationClass, void* systemInformation, uint systemInformationLength, uint* ReturnLength);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            [RuntimeImport("ntoskrnl.exe", "MmCopyVirtualMemory")]
+            public static extern NTSTATUS MmCopyVirtualMemory(void* SourceProcess, void* SourceAddress, void* TargetProcess, PVOID TargetAddress, ulong BufferSize, KProcessorMode PreviousMode, ulong* ReturnSize);
 
             [StructLayout(LayoutKind.Sequential)]
             public struct RTL_PROCESS_MODULE_INFORMATION
@@ -140,6 +201,15 @@ namespace KernelSharp
                 public RTL_PROCESS_MODULE_INFORMATION Modules;
             }
         }
+
+        #region Enums
+
+        public enum KProcessorMode
+        {
+            KernelMode,
+            UserMode,
+            MaximumMode
+        };
 
         public enum SystemInformationClass
         {
@@ -670,7 +740,7 @@ namespace KernelSharp
 
             MaximumNtStatus = 0xffffffff
         }
-
+        #endregion
     }
 }
 

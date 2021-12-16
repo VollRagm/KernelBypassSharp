@@ -101,5 +101,39 @@ namespace KernelBypassSharp
 
             return match;
         }
+
+        //from https://github.com/btbd/access/blob/noseh/Driver/util.c
+        public static bool ProbeUserAddress(PVOID addr, ulong size, uint alignment)
+        {
+            if (addr == 0) return false;
+            if (size == 0)
+            {
+                return true;
+            }
+
+            ulong current = (ulong)addr;
+            if (((ulong)addr & (alignment - 1)) != 0)
+            {
+                return false;
+            }
+
+            ulong last = current + size - 1;
+            if ((last < current) || (last >= 0x7FFFFFFF0000))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        //from https://github.com/btbd/access/blob/noseh/Driver/util.c
+        public static bool SafeCopy(PVOID dest, PVOID src, ulong size)
+        {
+            ulong returnSize = 0;
+            if (NT_SUCCESS(MmCopyVirtualMemory(IoGetCurrentProcess(), src, IoGetCurrentProcess(), dest, size, KProcessorMode.KernelMode, &returnSize)) && returnSize == size)
+                return true;
+
+            return false;
+        }
     }
 }

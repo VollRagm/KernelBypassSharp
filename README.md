@@ -3,7 +3,7 @@ C# Kernel Mode Driver to read and write memory in protected processes.
 This project is based on my https://github.com/VollRagm/KernelSharp repository.
 The hooked function this example uses has been shared publicly, so Anticheat solutions might detect it.
 
-This project is not finished yet and non-functional in the current state.
+The most important part of the code is in [Program.cs](https://github.com/VollRagm/KernelBypassSharp/blob/main/KernelBypassSharp/Program.cs).
 
 # Compiling
 Clone this repository. Then run `nuget restore` to restore the required packages. Open the build.bat and fix the file paths.

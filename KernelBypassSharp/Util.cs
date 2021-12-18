@@ -52,7 +52,7 @@ namespace KernelBypassSharp
                 if ('x' == *mask && *addr != *pattern)
                     return false;
 
-                mask += 2;  //C# strings are 2 bytes long, so we skip 2 bytes here
+                mask += 2;  //C# chars are Widechars, so they are 2 bytes long --> we skip 2 bytes here
                 pattern += 2;
                 ++addr;
             }

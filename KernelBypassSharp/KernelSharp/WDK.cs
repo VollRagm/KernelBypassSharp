@@ -8,26 +8,26 @@ namespace KernelSharp
     {
         #region Struct Definitions
 
-        public struct EPROCESS
+        public struct PEPROCESS
         {
             private void* _Value;
 
-            public static implicit operator EPROCESS(void* value)
+            public static implicit operator PEPROCESS(void* value)
             {
-                return new EPROCESS { _Value = value };
+                return new PEPROCESS { _Value = value };
             }
 
-            public static implicit operator EPROCESS(ulong value)
+            public static implicit operator PEPROCESS(ulong value)
             {
-                return new EPROCESS { _Value = (void*)value };
+                return new PEPROCESS { _Value = (void*)value };
             }
 
-            public static implicit operator void*(EPROCESS value)
+            public static implicit operator void*(PEPROCESS value)
             {
                 return value._Value;
             }
 
-            public static implicit operator ulong(EPROCESS value)
+            public static implicit operator ulong(PEPROCESS value)
             {
                 return (ulong)value._Value;
             }
@@ -141,6 +141,10 @@ namespace KernelSharp
         public static extern void* IoGetCurrentProcess();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        [RuntimeImport("ntoskrnl.exe", "PsLookupProcessByProcessId")]
+        public static extern NTSTATUS PsLookupProcessByProcessId(uint ProcessId, PEPROCESS* process);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport("ntoskrnl.exe", "DbgBreakPoint")]
         public static extern void DbgBreakPoint();
 
@@ -177,7 +181,11 @@ namespace KernelSharp
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             [RuntimeImport("ntoskrnl.exe", "MmCopyVirtualMemory")]
-            public static extern NTSTATUS MmCopyVirtualMemory(void* SourceProcess, void* SourceAddress, void* TargetProcess, PVOID TargetAddress, ulong BufferSize, KProcessorMode PreviousMode, ulong* ReturnSize);
+            public static extern NTSTATUS MmCopyVirtualMemory(void* SourceProcess, void* SourceAddress, void* TargetProcess, void* TargetAddress, ulong BufferSize, KProcessorMode PreviousMode, ulong* ReturnSize);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            [RuntimeImport("ntoskrnl.exe", "PsGetProcessSectionBaseAddress")]
+            public static extern PVOID PsGetProcessSectionBaseAddress(void* process);
 
             [StructLayout(LayoutKind.Sequential)]
             public struct RTL_PROCESS_MODULE_INFORMATION

@@ -1,7 +1,7 @@
 @echo off
 
 :: you have to set the path to whatever it is for you
-@set ILCPATH="C:\Users\vollrahm\.nuget\packages\runtime.win-x64.microsoft.dotnet.ilcompiler\7.0.0-alpha.1.21612.2\tools"
+@set ILCPATH="E:\tools"
 @set NTOSKRNLLIBPATH="D:\Windows Kits\10\lib\10.0.19041.0\km\x64\ntoskrnl.lib"
 
 @if not exist %ILCPATH%\ilc.exe (

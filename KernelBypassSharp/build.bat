@@ -5,7 +5,7 @@
 @set NTOSKRNLLIBPATH="D:\Windows Kits\10\lib\10.0.19041.0\km\x64\ntoskrnl.lib"
 
 @if not exist %ILCPATH%\ilc.exe (
-  echo The DROPPATH environment variable not set.
+  echo The Il2Native compiler was not found.
   exit /B
 )
 
@@ -20,7 +20,7 @@
 csc.exe /nologo /debug:embedded /noconfig /nostdlib /runtimemetadataversion:v4.0.30319 Program.cs NTImage.cs Util.cs KernelSharp/WDK.cs KernelSharp/Runtime/InteropServices.cs KernelSharp/Runtime/CompilerHelpers.cs KernelSharp/Runtime/CompilerServices.cs KernelSharp/Runtime/System.cs KernelSharp/Runtime/Runtime.cs /out:Program.ilexe /langversion:latest /unsafe || goto Error
 %ILCPATH%\ilc Program.ilexe -o Program.obj --systemmodule Program --map Program.map -O || goto Error
 
-:: Also set this path to your oath
+:: Also set this path to your path
 link.exe %NTOSKRNLLIBPATH% /nologo /subsystem:native /DRIVER:WDM Program.obj /entry:DriverEntry /incremental:no /out:Driver.sys || goto Error
 @goto :EOF
 
